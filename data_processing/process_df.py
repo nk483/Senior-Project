@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 #Processes the dataframe containing all the data
-df = pd.read_pickle('data_processing/combined_df.pkl')
+df = pd.read_parquet('data_processing/combined_df.parquet')
 #Ensure df is sorted first by matchid, then within a match by sportsbook, and then within a stream by timestamp
 df = df.sort_values(['id', 'Sportsbook', 'Time'])
 print(df.shape[0])
@@ -59,4 +59,4 @@ def calc_chunk(group):
     chunk = chunk.apply(lambda x: max(x,0))
     return chunk
 df['Chunk'] = sport_group.transform(calc_chunk)
-df.to_pickle('data_processing/processed_df.pkl')
+df.to_parquet('data_processing/processed_df.parquet')

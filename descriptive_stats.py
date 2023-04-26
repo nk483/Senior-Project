@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-df = pd.read_pickle('data_processing/processed_df.pkl')
+df = pd.read_parquet('data_processing/processed_df.parquet')
 grouped = df.groupby(['id', 'Sportsbook'])
 def calc_mov_ur(group):
     movement = 0

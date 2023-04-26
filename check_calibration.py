@@ -13,7 +13,7 @@ def apply_func(group, start):
         middle_obs = group['Team 1 Belief'].iloc[int(n/2)]
         return {"Middle Belief" : middle_obs, "Result" : result}
     
-df = pd.read_pickle('data_processing/processed_df.pkl')
+df = pd.read_parquet('data_processing/processed_df.parquet')
 grouped = df.groupby(['id', 'Sportsbook'])
 start = False
 result = grouped.apply(apply_func, start = start)

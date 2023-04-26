@@ -3,7 +3,7 @@ import numpy as np
 import sys
 from scipy.stats import norm
 from tabulate import tabulate
-df = pd.read_pickle('data_processing/processed_df.pkl')
+df = pd.read_parquet('data_processing/processed_df.parquet')
 df['EM'] = df['Movement'] - df['Uncertainty Reduction']
 sportsbooks_df = df.groupby('Sportsbook')
 sb_df = sportsbooks_df[['EM', 'Uncertainty Reduction']]
