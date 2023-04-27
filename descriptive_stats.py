@@ -2,21 +2,26 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+#This file creates a bar chart of average M and R per match by sportsbook
+# and plots average M and R over the course of a game for each sport
+
 df = pd.read_parquet('data_processing/processed_df.parquet')
-grouped = df.groupby(['id', 'Sportsbook'])
-def calc_mov_ur(group):
-    movement = 0
-    for i,obs in enumerate(group['Team 1 Belief']):
-        if i == 0:
-            init_uncert = obs*(1-obs)
-            prev_obs = obs
-            continue
-        elif i == len(group) - 1:
-            final_uncert = obs * (1-obs)
-        movement += (obs - prev_obs) ** 2
-        prev_obs = obs
-    uncertainty_reduction = init_uncert - final_uncert
-    return {"Movement":movement, "Uncertainty Reduction":uncertainty_reduction}
+
+mean_df = df.groupby(['Sportsbook', 'id'])[['Movement', 'Uncertainty Reduction']].sum().reset_index()
+mean_df = mean_df.groupby('Sportsbook').mean().reset_index()
+#plot bar chart
+fig,ax = plt.subplots(figsize=(8,9))
+ax = mean_df.plot(x='Sportsbook', y=['Movement', 'Uncertainty Reduction'], kind='bar', ax=ax)
+ax.set_xlabel('Sportsbook')
+ax.set_ylabel('Average M and R')
+ax.tick_params(axis='x', which='major', labelsize=8)
+ax.set_yticks(np.arange(0, .25, .025))
+newticks = mean_df['Sportsbook'].values
+newticks[0] = 'Barstool'
+newticks[-1] = 'Hill'
+newticks[-5] = 'PointsBet'
+ax.set_xticklabels(newticks)
+plt.savefig('figures/Average Mov and UR by Sportsbook')
 
 # result = grouped.apply(calc_mov_ur)
 # result = result.apply(lambda x: pd.Series(x))
@@ -38,7 +43,8 @@ def calc_mov_ur(group):
 # ax.set_xticklabels(newticks)
 # plt.savefig('Average Mov and UR by Sportsbook')
 
-#Movement and UR over time
+
+#Movement and UR over time plot
 game_lengths = df.groupby(['Sport', 'id', 'Sportsbook'])['Minute Mark'].max()
 avg_lengths = game_lengths.groupby('Sport').mean()
 chunk_sizes = avg_lengths / 24
@@ -62,7 +68,7 @@ for sport, data in grouped.groupby('Sport'):
     
 # adjust the layout and save the figure
 fig.tight_layout()
-fig.savefig('Movement and UR vs. Time by Sport.png')
+fig.savefig('figures/Movement and UR vs. Time by Sport.png')
 
 
 

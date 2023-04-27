@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from scipy.stats import norm
 from tabulate import tabulate
+#Implements the main AR statistical test on our data and prints the results as a table
 df = pd.read_parquet('data_processing/processed_df.parquet')
 df['EM'] = df['Movement'] - df['Uncertainty Reduction']
 sportsbooks_df = df.groupby('Sportsbook')

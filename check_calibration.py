@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-def apply_func(group, start):
+#This file generates a plot of the initial (middle) belief vs result, averaged over all streams
+
+def calibrate(group, start):
     last_obs = group['Team 1 Belief'].iloc[-1]
     result = int(round(last_obs, 0))
     if start:
@@ -16,14 +18,14 @@ def apply_func(group, start):
 df = pd.read_parquet('data_processing/processed_df.parquet')
 grouped = df.groupby(['id', 'Sportsbook'])
 start = False
-result = grouped.apply(apply_func, start = start)
+result = grouped.apply(calibrate, start = start)
 if start:
     group_col = 'Initial Belief'
 else:
     group_col = 'Middle Belief'
 mean_result = result.groupby(group_col)['Result'].mean()
 slope, intercept, r_value, p_value, std_err = stats.linregress(mean_result.index, mean_result)
-# plot the mean 'Result' for each unique 'Initial Belief' value as a scatter plot with error bars
+
 fig, ax = plt.subplots()
 ax.scatter(mean_result.index, mean_result)
 ax.plot(mean_result.index, mean_result.index, '--', color='gray', label = 'Identity')
