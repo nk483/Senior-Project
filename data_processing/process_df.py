@@ -17,7 +17,7 @@ df = df[~condition]
 
 
 #Keep only major sports
-sports = ['MLS', 'NBA', 'NCAAB', 'NFL', 'NCAAF', 'MLB']
+sports = ['MLS', 'NBA', 'NCAAB', 'NFL', 'NCAAF', 'MLB', 'NHL']
 df = df[df['Sport'].isin(sports)]
 
 #Only keep rows that reflect changes in beliefs
