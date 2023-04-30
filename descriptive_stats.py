@@ -44,11 +44,12 @@ for sport, data in grouped.groupby('Sport'):
     chunk_size = chunk_sizes.loc[sport]
     j = i % 2
     ax = axes[i // 2][j]
-    ax.plot(chunk_size*data['Chunk'], data['Movement'])
-    ax.plot(chunk_size*data['Chunk'], data['Uncertainty Reduction'])
+    ax.plot(chunk_size*data['Chunk'], data['Movement'], label = 'M')
+    ax.plot(chunk_size*data['Chunk'], data['Uncertainty Reduction'], label = 'R')
     ax.set_title(sport + ' (n=' + str(size) + ')')
     ax.set_xlabel('Minute Mark')
     ax.set_ylabel('M and R')
+    ax.legend()
     i += 1
     
 # adjust the layout and save the figure

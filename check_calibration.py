@@ -9,20 +9,20 @@ def calibrate(group, start):
     result = int(round(last_obs, 0))
     if start:
         initial_obs = group.iloc[0]       
-        return pd.DataFrame({"Initial Belief" : [initial_obs], "Result" : [result]})
+        return pd.DataFrame({"Initial Implied Odds" : [initial_obs], "Result" : [result]})
     else:
         n = len(group)
         middle_obs = group.iloc[int(n/2)]
-        return pd.DataFrame({"Middle Belief" : [middle_obs], "Result" : [result]})
+        return pd.DataFrame({"Middle Implied Odds" : [middle_obs], "Result" : [result]})
 #the value of start controls whether we're getting the initial implied odds or middle implied odds   
 start_vals = [True, False]
 for start in start_vals:   
     df = pd.read_parquet('data_processing/processed_df.parquet')
     grouped = df.groupby(['id', 'Sportsbook'])['Team 1 Belief']
     if start:
-        group_col = 'Initial Belief'
+        group_col = 'Initial Implied Odds'
     else:
-        group_col = 'Middle Belief'
+        group_col = 'Middle Implied Odds'
 
     calibrate_df = grouped.apply(calibrate, start = start)
 
@@ -39,7 +39,8 @@ for start in start_vals:
     ax.errorbar(mean_result.index, mean_result, yerr = sd_means, fmt = 'none', ecolor = 'black', capsize=5, capthick=1)
     ax.plot(mean_result.index, mean_result.index, '--', color='gray', label = 'Identity')
     ax.plot(mean_result.index, intercept + slope*mean_result.index, '-', color = 'red', label = 'OLS')
-    ax.set_xlabel(group_col)
+    x_label = ' '.join(group_col.split(' ')[1:])
+    ax.set_xlabel(x_label)
     ax.set_ylabel('Mean Result')
     ax.set_title(group_col +  ' vs Mean Result')
     plt.legend()
