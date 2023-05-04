@@ -33,7 +33,7 @@ for start in start_vals:
     mean_result = calibrate_df.groupby(group_col)['Result'].mean()
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(mean_result.index, mean_result)
-
+    
     fig, ax = plt.subplots()
     ax.scatter(mean_result.index, mean_result)
     ax.errorbar(mean_result.index, mean_result, yerr = sd_means, fmt = 'none', ecolor = 'black', capsize=5, capthick=1)
